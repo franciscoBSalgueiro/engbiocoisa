@@ -10,15 +10,14 @@ Usefull for High School students ready to beggin their University Life and for u
 
 # Running our project
 
-This is a guide on how to run a project that uses Prisma and Next.js with pnpm. 
+This is a guide on how to run our project that uses Prisma and Next.js with pnpm. 
 
 ## Prerequisites
 
-Before running the project, you must have the following software installed:
+Before running our project, you must have the following software installed:
 
-- Node.js (version 14 or later)
-- pnpm (version 6 or later)
-- Prisma CLI (version 2 or later)
+- Node.js (version 16 or later)
+- pnpm (version 7 or later)
 
 ## Installation
 
@@ -27,8 +26,18 @@ To install the project, follow these steps:
 1. Clone the repository from GitHub: `git clone https://github.com/franciscoBSalgueiro/engbiocoisa`
 2. Navigate to the project directory: `cd engbiocoisa/website`
 3. Install the dependencies using pnpm: `pnpm install`
-4. Generate the Prisma client: `npx prisma generate`
-5. Initializae the database: `npx prisma db push`
+4. Generate the Prisma client: `pnpx prisma generate`
+5. Initialize the database: `pnpx prisma db push`
+
+## Environment Variables
+
+The project uses environment variables to configure the database connection. Define the following environment variables in a `.env` file in the project root:
+
+```
+DISCORD_CLIENT_ID=<your Discord client ID>
+DISCORD_CLIENT_SECRET=<your Discord client secret>
+NEXTAUTH_SECRET=<your NextAuth secret>
+```
 
 ## Running the Project
 
@@ -44,9 +53,4 @@ To build the project for production, follow these steps:
 1. Build the Next.js app: `pnpm build`
 2. Start the production server: `pnpm start`
 3. Open your web browser and navigate to `http://localhost:3000`
-
-## Conclusion
-
-That's it! You now know how to install, run, and build a project that uses Prisma and Next.js with pnpm. Happy coding!
-
 
