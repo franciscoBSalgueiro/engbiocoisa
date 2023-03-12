@@ -37,26 +37,7 @@ function App(props: Props) {
         </div>
       </div>
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-4">
-          <Link
-            href="/browse"
-            className="bg-surface py-8 rounded-lg border-2 border-black hover:text-accent1"
-          >
-            <h2 className="text-2xl font-bold mb-4 px-8">Find University</h2>
-            <p className="text-gray-600 px-8">
-              See or Create reviews of a university.
-            </p>
-          </Link>
-          <Link
-            href="/browse"
-            className="bg-surface py-8 rounded-lg border-2 border-black hover:text-accent1"
-          >
-            <h2 className="text-2xl font-bold mb-4 px-8">Find Major</h2>
-            <p className="text-gray-600 px-8">
-              See or Create reviews of a Major.
-            </p>
-          </Link>
-        </div>
+        
         <Link href="/blog">
           <h2 className="text-4xl font-bold py-10">News</h2>
         </Link>
@@ -81,8 +62,6 @@ export default App;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerSession(context.req, context.res, authOptions);
-
-  // get all the posts in /content
 
   const postsDirectory = path.join(process.cwd(), "content");
   const filenames = fs.readdirSync(postsDirectory);

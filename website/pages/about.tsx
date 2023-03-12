@@ -6,7 +6,7 @@ import { authOptions } from "./api/auth/[...nextauth]";
 function Page({ session }: { session: Session | null }) {
   return (
     <BaseLayout session={session}>
-      <div className="mx-20 my-20">
+      <div className="mx-20 my-20 bg-surface px-20 py-10 rounded">
         <h1 className="text-4xl font-bold mb-4">About us</h1>
 
         <p className="mb-4">
@@ -20,9 +20,9 @@ function Page({ session }: { session: Session | null }) {
           }
         </p>
 
-        <p className="text-center text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-700 to- bg-yellow-400">
+        {/* <p className="text-center text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-700 to- bg-yellow-400">
           Your Momentum is our Master
-        </p>
+        </p> */}
       </div>
     </BaseLayout>
   );

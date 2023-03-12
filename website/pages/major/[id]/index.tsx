@@ -1,38 +1,18 @@
 import BaseLayout from "@/components/BaseLayout";
 import Rating from "@/components/Rating";
 import RatingHistogram from "@/components/RatingHistogram";
+import ReviewCard from "@/components/ReviewCard";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { MajorReview, Prisma, User } from "@prisma/client";
+import { getAverageMajorReviewRatings } from "@/utils/utils";
+import { MajorReview, Prisma } from "@prisma/client";
 import { GetServerSidePropsContext } from "next";
 import { getServerSession } from "next-auth";
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { ArrowUpRight, Books, Pencil } from "tabler-icons-react";
+import { ArrowLeft, ArrowUpRight, BuildingCommunity } from "tabler-icons-react";
 import { prisma } from "../../../prisma/prisma";
 
 type Props = Prisma.PromiseReturnType<typeof getServerSideProps>["props"];
-
-function getAverageRatings(reviews: MajorReview[]) {
-  const averages = {
-    overallQuality: 0,
-    education: 0,
-    lifeBalance: 0,
-  };
-
-  reviews.forEach((review) => {
-    averages.education += review.education;
-    averages.overallQuality += review.overallQuality;
-    averages.lifeBalance += review.lifeBalance;
-  });
-
-  const aggregateRatings = {
-    education: averages.education / reviews.length,
-    overallQuality: averages.overallQuality / reviews.length,
-    lifeBalance: averages.lifeBalance / reviews.length,
-  };
-  return aggregateRatings;
-}
 
 function Page(props: Props) {
   const { major } = props!;
@@ -41,28 +21,45 @@ function Page(props: Props) {
   if (!major) return <div>Major not found...</div>;
   return (
     <BaseLayout session={props!.session}>
-      <div className="px-10 py-10">
-        <h1 className="text-3xl font-bold pt-20">{major.name}</h1>
-        <h2 className="text-2xl pb-10">{major.college.name}</h2>
+      <div className="px-52 py-10">
+        <div className="bg-surface rounded px-10 py-8 max-w-6xl mx-auto mb-10">
+          <Link
+            href="/browse"
+            className="flex text-gray-500 text-sm items-center gap-2 hover:underline"
+          >
+            <ArrowLeft size={15} /> Back
+          </Link>
+          <h1 className="text-3xl font-bold pt-20">{major.name}</h1>
+          <Link href={`/college/${major.college.id}`}>
+            <h2 className="text-2xl pb-10 flex gap-2 items-center hover:underline">
+              <BuildingCommunity />
+              {major.college.name}
+            </h2>
+          </Link>
+        </div>
 
-        <div className="bg-surface rounded px-10 py-8">
+        <div className="bg-surface rounded px-10 py-8 max-w-6xl mx-auto">
           <div className="flex justify-between">
             <h2 className="text-5xl font-bold mb-4">Reviews</h2>
 
-            <Link
-              href={`/major/${major.id}/review`}
-              className="bg-accent2 px-4 py-2 my-auto text-white font-bold rounded border-2 border-accent2 hover:bg-white hover:text-accent2"
-            >
-              Add Review
-            </Link>
+            {props?.session && (
+              <Link
+                href={`/major/${major.id}/review`}
+                className="bg-accent2 px-4 py-2 my-auto text-white font-bold rounded border-2 border-accent2 hover:bg-white hover:text-accent2"
+              >
+                Add Review
+              </Link>
+            )}
           </div>
 
-          <ReviewStats
-            showTotal
-            reviews={major.majorReview}
-            field="overallQuality"
-            label="Overall Quality"
-          />
+          <div className="sticky top-0 bg-surface z-10 p-4 border-b-2 pt-10">
+            <ReviewStats
+              showTotal
+              reviews={major.majorReview}
+              field="overallQuality"
+              label="Overall Quality"
+            />
+          </div>
           {open ? (
             <>
               <ReviewStats
@@ -75,9 +72,17 @@ function Page(props: Props) {
                 field="lifeBalance"
                 label="Life Balance"
               />
+              <div className="w-full mt-2 text-center py-4 border-b-2">
+                <button
+                  className="hover:underline"
+                  onClick={() => setOpen(false)}
+                >
+                  Show Less
+                </button>
+              </div>
             </>
           ) : (
-            <div className="w-1/3 mt-2 ml-24 text-right">
+            <div className="w-full mt-2 text-center py-4 border-b-2">
               {props?.session ? (
                 <button
                   className="hover:underline"
@@ -96,7 +101,11 @@ function Page(props: Props) {
           <div className="flex flex-col divide-y divide-gray-300">
             {major?.majorReview?.map((majorReview) => (
               <div key={majorReview.id} className="py-4">
-                <ReviewCard review={majorReview} user={majorReview.user} />
+                <ReviewCard
+                  review={majorReview}
+                  user={majorReview.user}
+                  session={props?.session}
+                />
               </div>
             ))}
           </div>
@@ -128,7 +137,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       college: true,
       majorReview: {
         include: {
-          user: true,
+          user: {
+            include: {
+              reviews: true,
+            },
+          },
         },
       },
     },
@@ -142,44 +155,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   };
 }
 
-function ReviewCard({ review, user }: { review: MajorReview; user: User }) {
-  return (
-    <div className="px-4 py-5 flex gap-10">
-      <div className="flex gap-2 mb-4 flex-shrink-0">
-        {user.image && (
-          <Image
-            className="rounded"
-            src={user.image}
-            width={60}
-            height={60}
-            alt={""}
-          />
-        )}
-        <div className="flex flex-col">
-          <p className="font-bold text-xl">{user.name}</p>
-          <div className="flex items-center gap-1">
-            <Books size={20} />
-            <p className="text-sm">Studying at IST</p>
-          </div>
-          <div className="flex items-center flex-nowrap gap-1">
-            <Pencil size={20} />
-            <p className="text-sm">Reviewed 10 classes</p>
-          </div>{" "}
-        </div>
-      </div>
-      <div>
-        <div className="flex items-center gap-2 mb-4">
-          <Rating rating={review.overallQuality} />
-          <p className="opacity-75">{review.createdAt.toLocaleDateString()}</p>
-        </div>
-        <h3 className="text-lg leading-6 font-medium text-gray-900">
-          {review?.description}
-        </h3>
-      </div>
-    </div>
-  );
-}
-
 function ReviewStats({
   showTotal,
   reviews,
@@ -191,7 +166,7 @@ function ReviewStats({
   field: string;
   label: string;
 }) {
-  const averageRatings = getAverageRatings(reviews || {});
+  const averageRatings = getAverageMajorReviewRatings(reviews);
   const rField = field as keyof typeof averageRatings;
 
   return (
@@ -213,7 +188,7 @@ function ReviewStats({
           <p className="text-3xl font-bold">
             {averageRatings[rField].toFixed(1)}
           </p>
-          <Rating rating={averageRatings.overallQuality} />
+          <Rating rating={averageRatings[rField]} />
         </div>
         <p className="opacity-50">{"Based on last year's reviews"}</p>
       </div>

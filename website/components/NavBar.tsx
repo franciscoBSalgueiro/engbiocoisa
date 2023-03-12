@@ -3,7 +3,7 @@ import Link from "next/link";
 
 function NavBar({ session }: { session: Session | null }) {
   return (
-    <nav className="bg-beige shadow border-b-2 border-black sticky top-0 w-full z-10">
+    <nav className="bg-beige shadow border-b-2 border-black sticky top-0 w-full z-20">
       <div className="flex justify-between py-2 items-center px-40">
         <Link href="/">
           <p className="font-bold text-xl">MasterMomentum.</p>

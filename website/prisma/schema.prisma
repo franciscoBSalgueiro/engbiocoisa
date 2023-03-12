@@ -20,14 +20,6 @@ model College {
     reviews       Review[]
 }
 
-model CsvdataUni {
-    id       Int    @id @default(autoincrement())
-    name     String
-    locale   String
-    students Int
-    typeof   String
-}
-
 model Review {
     id              Int      @id @default(autoincrement())
     userId          Int
@@ -79,13 +71,16 @@ model Session {
 
 model Major {
     id          Int           @id @default(autoincrement())
-    name        String        @unique
+    name        String
     seats       Int
     collegeId   Int
-    dgesID      String        @unique
+    dgesID      String
+    collegeDGES String
     cycle       String
     college     College       @relation(fields: [collegeId], references: [id])
     majorReview MajorReview[]
+
+    @@unique([dgesID, collegeDGES])
 }
 
 model MajorReview {

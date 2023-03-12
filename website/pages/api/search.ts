@@ -27,6 +27,10 @@ export default async function handler(
           contains: q,
         },
       },
+      include: {
+        reviews: true,
+        majors: true,
+      },
       orderBy: {
         [sort]: sorting,
       },
@@ -46,6 +50,7 @@ export default async function handler(
       },
       include: {
         college: true,
+        majorReview: true,
       },
       orderBy: {
         [newsort]: sorting,
