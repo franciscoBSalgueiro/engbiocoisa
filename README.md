@@ -2,10 +2,8 @@
 
 ## **MasterMomentum**
 
-
-
-TThe app allows users to search for universities and see reviews from other students about their experiences. Users can also search for majors within each university and see reviews about the specific major.
-Usefull for High School students ready to beggin their University Life and for university students that want to ingress in a Masters degree or on optional classes.
+This project allows users to search for universities and see reviews from other students about their experiences. Users can also search for majors within each university and see reviews about the specific major.
+Useful for High School students ready to begin their University Life and for university students that want to ingress in a Masters degree or in optional classes.
 
 
 # Running our project
